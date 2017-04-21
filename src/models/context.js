@@ -51,8 +51,10 @@ const contextSchema = new Schema({
     }
 });
 
-const Context = mongoose.model('Context', contextSchema, 'contexts');
 module.exports = {
-    Context: Context,
-    ContextStatus: ContextStatus
+    contextSchema: contextSchema,
+    ContextStatus: ContextStatus,
+    createContextModel: function createContextModel(connection){
+        return connection.model('Context', contextSchema, 'contexts');
+    }
 };

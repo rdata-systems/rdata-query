@@ -29,7 +29,9 @@ const eventSchema = new Schema({
     }
 });
 
-const Event = mongoose.model('Event', eventSchema, 'events');
 module.exports = {
-    Event: Event
+    eventSchema: eventSchema,
+    createEventModel: function createEventModel(connection){
+        return connection.model('Event', eventSchema, 'events');
+    }
 };
