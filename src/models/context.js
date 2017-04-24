@@ -23,10 +23,10 @@ const contextSchema = new Schema({
         enum: Object.keys(ContextStatus).map(function(key){ return ContextStatus[key] })  // Values
     },
     parentContextId: {
-        type: ObjectId
+        type: this
     },
     children: {
-        type: [ObjectId]
+        type: [this]
     },
     contextDataVersion: {
         type: Number

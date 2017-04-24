@@ -2,8 +2,7 @@
 
 const config = require('../config');
 const mongoose = require('mongoose')
-    , Schema = mongoose.Schema
-    , ObjectId = Schema.ObjectId;
+    , Schema = mongoose.Schema;
 
 const eventSchema = new Schema({
     userId: {
@@ -16,7 +15,8 @@ const eventSchema = new Schema({
         type: String
     },
     contextId: {
-        type: ObjectId
+        type: String,
+        ref: 'Context'
     },
     eventDataVersion: {
         type: Number
