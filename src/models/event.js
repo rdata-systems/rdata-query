@@ -8,6 +8,9 @@ const eventSchema = new Schema({
     userId: {
         type: String
     },
+    userPayload: {
+        type: Object
+    },
     time: {
         type: Number
     },
@@ -22,6 +25,9 @@ const eventSchema = new Schema({
         type: Number
     },
     gameVersion: {
+        type: Number
+    },
+    dataCollectionServerVersion: {
         type: Number
     },
     data: {

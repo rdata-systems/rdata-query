@@ -15,6 +15,9 @@ const contextSchema = new Schema({
     userId: {
         type: String
     },
+    userPayload: {
+        type: Object
+    },
     name: {
         type: String
     },
@@ -32,6 +35,9 @@ const contextSchema = new Schema({
         type: Number
     },
     gameVersion: {
+        type: Number
+    },
+    dataCollectionServerVersion: {
         type: Number
     },
     timeStarted: {

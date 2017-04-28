@@ -15,15 +15,22 @@ const ContextStatus = contextModel.ContextStatus;
 var app;
 var Context;
 
+const game = 'test';
+
 var testUser = {
     id: 1234567,
-    roles: [{role: 'readData'}, {role: 'readWriteData', group: 123456 }]
+    roles: [{role: 'readWrite'}, {role: 'readData', game: game, group: 123456 }]
+};
+
+var testUserNoRole = {
+    id: 1234567,
+    roles: [{role: 'readWrite'}, {role: 'readData', game: game, group: 999999 }]
 };
 
 var contextModels;
 
 beforeEach(function(done) {
-    app = express('/', routes(mongoose.connection));
+    app = express('/', routes(mongoose.connection, game));
     Context = contextModel.createContextModel(mongoose.connection);
 
     var fruits = ["apple", "banana", "pear", "peach", "grape", "orange", "pineapple"]; // I am hungry, ok?!
@@ -40,6 +47,10 @@ beforeEach(function(done) {
             contextDataVersion: 1,
             gameVersion: 1,
             userId: '09080706050403020100',
+            userPayload: {
+                groups: [111111, 22222, 123456],
+                selectedGroups: [123456]
+            },
             data: {
                 someNumber: i,
                 fruit: fruits[Math.floor(Math.random()*fruits.length)]
@@ -90,7 +101,7 @@ describe('/contexts', function(){
                 .expect(401, done);
         });
 
-        it('/ - responds with 200 OK and returns the list of contexts', function(done) {
+        it('/ - responds with 200 OK and returns the list of contexts', function(done){
             var accessToken = jwt.sign({user: testUser}, config.jwtSecret);
             request(app)
                 .get('/')
@@ -98,7 +109,20 @@ describe('/contexts', function(){
                 .expect(200)
                 .end(function(err, res){
                     if (err) return done(err);
-                    assert(res.body.contexts.length, contextModels.length);
+                    assert.equal(res.body.contexts.length, contextModels.length);
+                    done();
+                });
+        });
+
+        it('/ - responds with 200 OK and returns the list of empty contexts (no correct role)', function(done) {
+            var accessToken = jwt.sign({user: testUserNoRole}, config.jwtSecret);
+            request(app)
+                .get('/')
+                .set('Authorization', "Bearer " + accessToken)
+                .expect(200)
+                .end(function(err, res){
+                    if (err) return done(err);
+                    assert.equal(res.body.contexts.length, 0);
                     done();
                 });
         });

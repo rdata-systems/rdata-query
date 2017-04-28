@@ -14,15 +14,22 @@ const eventModel = require('../models/event');
 var app;
 var Event;
 
+const game = 'test';
+
 var testUser = {
     id: 1234567,
-    roles: [{role: 'readData'}, {role: 'readWriteData', group: 123456 }]
+    roles: [{role: 'readWrite'}, {role: 'readData', game: game, group: 123456 }]
+};
+
+var testUserNoRole = {
+    id: 1234567,
+    roles: [{role: 'readWrite'}, {role: 'readData', game: game, group: 999999 }]
 };
 
 var eventModels;
 
 beforeEach(function(done) {
-    app = express('/', routes(mongoose.connection));
+    app = express('/', routes(mongoose.connection, game));
     Event = eventModel.createEventModel(mongoose.connection);
 
     var fruits = ["apple", "banana", "pear", "peach", "grape", "orange", "pineapple"]; // I am hungry, ok?!
@@ -35,6 +42,10 @@ beforeEach(function(done) {
             eventDataVersion: 1,
             gameVersion: 1,
             userId: '09080706050403020100',
+            userPayload: {
+                groups: [111111, 22222, 123456],
+                selectedGroups: [123456]
+            },
             data: {
                 someNumber: i,
                 fruit: fruits[Math.floor(Math.random()*fruits.length)]
@@ -93,7 +104,20 @@ describe('/events', function(){
                 .expect(200)
                 .end(function(err, res){
                     if (err) return done(err);
-                    assert(res.body.events.length, eventModels.length);
+                    assert.equal(res.body.events.length, eventModels.length);
+                    done();
+                });
+        });
+
+        it('/ - responds with 200 OK and returns the list of empty events (no correct role)', function(done) {
+            var accessToken = jwt.sign({user: testUserNoRole}, config.jwtSecret);
+            request(app)
+                .get('/')
+                .set('Authorization', "Bearer " + accessToken)
+                .expect(200)
+                .end(function(err, res){
+                    if (err) return done(err);
+                    assert.equal(res.body.events.length, 0);
                     done();
                 });
         });
