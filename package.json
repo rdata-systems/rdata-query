@@ -1,7 +1,8 @@
 {
-  "name": "rdata-query",
+  "name": "rdata-query-server",
   "version": "1.0.0",
   "description": "RData Query Server",
+  "readme": "readme.md",
   "main": "index.js",
   "scripts": {
     "test": "mocha src/**/*.test.js --reporter spec --recursive",
@@ -9,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rdata-systems/rdata-query.git"
+    "url": "git+https://github.com/rdata-systems/rdata-query-server.git"
   },
   "author": "Leonid Umanskiy",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rdata-systems/rdata-query/issues"
+    "url": "https://github.com/rdata-systems/rdata-query-server/issues"
   },
-  "homepage": "https://github.com/rdata-systems/rdata-query#readme",
+  "homepage": "https://github.com/rdata-systems/rdata-query-server#readme",
   "dependencies": {
     "body-parser": "^1.17.1",
     "compression": "^1.6.2",
