@@ -29,7 +29,7 @@ The HTTP header must look like this:
 Please, refer to the [rdata-auth-server](https://github.com/rdata-systems/rdata-auth-server) for more information regarding access and refresh tokens.
 
 
-# Querying
+## Querying
 This server provides 2 REST Api endpoints, `/contexts` and `/events`.
 The same querying rules are applied to both of them.
 
@@ -42,7 +42,7 @@ You can provide the following query paremeters to query the data:
 | GET query | `limit` | Limits the number of document by the provided amount | 0 | 15 | 
 | GET query | `sort` | Sorts the result by the provided rule. See [MongoDB documentation](https://docs.mongodb.com/manual/reference/method/cursor.sort/) for the detailed documentation | {} | { "time": "asc" } | 
 
-# Query value examples:
+# `query`
 You can provide a MongoDB-style query for filtering the documents.
 
 Here are some useful examples:
@@ -57,6 +57,20 @@ Here are some useful examples:
 
 `{ "timeEnded": {"$lte": 1493742320562 } }` - returns contexts that started before *1493742320562*
 
+# `skip`
+Skips first number of elements
+
+# `limit` 
+Limits the output by the provided number of elements
+
+# `Sort`
+Sorts the output by the provided rule. The rule should be compatible with Mongodb *sort()* function.
+Examples:
+
+`{ "time": "asc" }` - sorts by the event time in the ascending order
+`{ "name": 1 }` - sorts by the name in the ascending order
+`{ "timeStarted": "desc" }` - sorts by the time started in the descending order
+`{ "timeEnded": -1 }` - sorts by the time ended in the descending order
 
 
 
