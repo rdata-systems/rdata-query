@@ -37,10 +37,10 @@ You can provide the following query paremeters to query the data:
 
 | Source | Key | Description | Default value | Example value | 
 | -------|-----|-------------|---------------|---------------|
-| GET query or body | `query` | Query for filtering the data. See [MongoDB documentation](https://docs.mongodb.com/manual/tutorial/query-documents/) for the detailed documentation | {} |  { "name": "MyGameEvent" } |
-| GET query | `skip` | Skips the provided number of documents | 0 | 5 | 
-| GET query | `limit` | Limits the number of document by the provided amount | 0 | 15 | 
-| GET query | `sort` | Sorts the result by the provided rule. See [MongoDB documentation](https://docs.mongodb.com/manual/reference/method/cursor.sort/) for the detailed documentation | {} | { "time": "asc" } | 
+| GET params or body | `query` | Query for filtering the data. See [MongoDB documentation](https://docs.mongodb.com/manual/tutorial/query-documents/) for the detailed documentation | {} |  { "name": "MyGameEvent" } |
+| GET params | `skip` | Skips the provided number of documents | 0 | 5 | 
+| GET params | `limit` | Limits the number of document by the provided amount | 0 | 15 | 
+| GET params | `sort` | Sorts the result by the provided rule. See [MongoDB documentation](https://docs.mongodb.com/manual/reference/method/cursor.sort/) for the detailed documentation | {} | { "time": "asc" } | 
 
 ### `query`
 You can provide a MongoDB-style query for filtering the documents.
