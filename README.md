@@ -55,7 +55,7 @@ Here are some useful examples:
 
 `{ "timeStarted": {"$gte": 1493742320562 } }` - returns contexts that started after *1493742320562*. Please note that all dates are logged in the UNIX timestamp format, which is a number of *milliseconds* passed since Jan 1, 1970 00:00:00 UTC. You can use [this converter](https://currentmillis.com/) to convert between unix timestamp and date/time. Please be aware that unix timestamp is UTC and not your local time.
 
-`{ "timeEnded": {"$lte": 1493742320562 } }` - returns contexts that started before *1493742320562*
+`{ "timeEnded": {"$lte": 1493742320562 } }` - returns contexts that ended before *1493742320562*
 
 ### `skip`
 Skips first number of elements
