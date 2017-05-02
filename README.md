@@ -68,8 +68,11 @@ Sorts the output by the provided rule. The rule should be compatible with Mongod
 Examples:
 
 `{ "time": "asc" }` - sorts by the event time in the ascending order
+
 `{ "name": 1 }` - sorts by the name in the ascending order
+
 `{ "timeStarted": "desc" }` - sorts by the time started in the descending order
+
 `{ "timeEnded": -1 }` - sorts by the time ended in the descending order
 
 
