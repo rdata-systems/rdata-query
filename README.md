@@ -42,7 +42,7 @@ You can provide the following query paremeters to query the data:
 | GET query | `limit` | Limits the number of document by the provided amount | 0 | 15 | 
 | GET query | `sort` | Sorts the result by the provided rule. See [MongoDB documentation](https://docs.mongodb.com/manual/reference/method/cursor.sort/) for the detailed documentation | {} | { "time": "asc" } | 
 
-# `query`
+### `query`
 You can provide a MongoDB-style query for filtering the documents.
 
 Here are some useful examples:
@@ -57,13 +57,13 @@ Here are some useful examples:
 
 `{ "timeEnded": {"$lte": 1493742320562 } }` - returns contexts that started before *1493742320562*
 
-# `skip`
+### `skip`
 Skips first number of elements
 
-# `limit` 
+### `limit` 
 Limits the output by the provided number of elements
 
-# `Sort`
+### `Sort`
 Sorts the output by the provided rule. The rule should be compatible with Mongodb *sort()* function.
 Examples:
 
