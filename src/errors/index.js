@@ -24,6 +24,16 @@ const AuthorizationError = function UnauthorizedError(message, extra){
 };
 require('util').inherits(AuthorizationError, ClientError);
 
+const InvalidQueryIdError = function InvalidQueryIdError(message, extra) {
+    Error.captureStackTrace(this, this.constructor);
+    this.name = this.constructor.name;
+    this.message = message;
+    this.extra = extra;
+};
+require('util').inherits(InvalidQueryIdError, ClientError);
+
+
 module.exports.ClientError = ClientError;
 module.exports.AuthorizationError = AuthorizationError;
 module.exports.InvalidQueryError = InvalidQueryError;
+module.exports.InvalidQueryIdError = InvalidQueryIdError;

@@ -8,12 +8,12 @@ const InvalidQueryError = require('../../errors').InvalidQueryError;
 function QueryParserService() {
     var self = this;
 
-    this.fromQueryOrBody = function fromQueryOrBody(req, key){
+    this.fromQueryOrBody = function fromQueryOrBody(key, req){
         if (req.query && req.query[key]) {
             try {
                 return JSON.parse(req.query[key]);
             } catch (e) {
-                return next(new InvalidQueryError("query is not a valid json"));
+                return null;
             }
         } else if(req.body && req.body[key]) {
             return req.body[key];

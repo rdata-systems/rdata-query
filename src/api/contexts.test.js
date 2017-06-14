@@ -36,9 +36,10 @@ beforeEach(function(done) {
     var fruits = ["apple", "banana", "pear", "peach", "grape", "orange", "pineapple"]; // I am hungry, ok?!
     var contexts = [];
     for(var i=0; i<10; i++) {
+        var now = Date.now();
         var ctx = {
-            timeStarted: Date.now(),
-            timeEnded: null,
+            timeStarted: now,
+            timeEnded: now + 3 * 60 * 1000, // 3 minutes
             timeInterrupted: null,
             name: Math.random() > 0.5 ? 'TestContext' : 'MyContext',
             status: ContextStatus.started,
@@ -238,7 +239,7 @@ describe('/contexts', function(){
                 });
         });
 
-        it('?limit=2&skip=2&sort=+data.someNumber&&query={ "data.someNumber": { "$gte": 5 } } - responds with 200 OK and returns the list of contexts', function(done) {
+        it('?limit=2&skip=2&sort=+data.someNumber&query={ "data.someNumber": { "$gte": 5 } } - responds with 200 OK and returns the list of contexts', function(done) {
             var accessToken = jwt.sign({user: testUser}, config.jwtSecret);
             request(app)
                 .get('/')
@@ -310,6 +311,59 @@ describe('/contexts', function(){
                     assert.equal(parseInt(querystring.parse(url.parse(res.body.links.pages.prev).query).skip), 6);
                     assert.equal(res.body.links.pages.next, undefined);
                     assert.equal(parseInt(querystring.parse(url.parse(res.body.links.pages.last).query).skip), 8);
+                    done();
+                });
+        });
+    });
+
+    describe('POST /query', function(){
+        it('/query?query={type:"sum", key: "duration", query:{"data.someNumber": { "$gte": 5 }}} - responds with 200 OK and returns valid query id', function(done) {
+            var accessToken = jwt.sign({user: testUser}, config.jwtSecret);
+            var queryJson = JSON.stringify({type:"sum", key: "duration", query:{"data.someNumber": { "$gte": 5 }}});
+            request(app)
+                .post('/query')
+                .query({query: queryJson})
+                .set('Authorization', "Bearer " + accessToken)
+                .expect(200)
+                .end(function(err, res){
+                    if (err) return done(err);
+                    assert.equal(res.body.queryId, new Buffer(queryJson).toString('base64'), "query id is incorrect");
+                    done();
+                });
+        });
+    });
+
+    describe('GET /query/result', function(){
+        it('/query/result - query = {type:"sum", key: "duration", query:{"data.someNumber": { "$gte": 5 }}} - responds with 200 OK and returns valid sum of context durations', function(done) {
+            var accessToken = jwt.sign({user: testUser}, config.jwtSecret);
+            var queryJson = JSON.stringify({type:"sum", key: "duration", query:{"data.someNumber": { "$gte": 5 }}});
+            var queryId = new Buffer(queryJson).toString('base64');
+            request(app)
+                .get('/query/result')
+                .query({queryId: queryId})
+                .set('Authorization', "Bearer " + accessToken)
+                .expect(200)
+                .end(function(err, res){
+                    if (err) return done(err);
+                    assert.equal(res.body.sum, 5 * 3 * 60 * 1000, "sum is invalid"); // 5 contexts, each 3 mins long
+                    done();
+                });
+        });
+    });
+
+    describe('GET /query/result', function(){
+        it('/query/result - query = {type:"avg", key: "duration", query:{"data.someNumber": { "$gte": 5 }}} - responds with 200 OK and returns valid sum of context durations', function(done) {
+            var accessToken = jwt.sign({user: testUser}, config.jwtSecret);
+            var queryJson = JSON.stringify({type:"avg", key: "duration", query:{"data.someNumber": { "$gte": 5 }}});
+            var queryId = new Buffer(queryJson).toString('base64');
+            request(app)
+                .get('/query/result')
+                .query({queryId: queryId})
+                .set('Authorization', "Bearer " + accessToken)
+                .expect(200)
+                .end(function(err, res){
+                    if (err) return done(err);
+                    assert.equal(res.body.avg, 3 * 60 * 1000, "sum is invalid"); // 5 contexts, each 3 mins long = 3
                     done();
                 });
         });

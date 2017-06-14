@@ -57,6 +57,25 @@ const contextSchema = new Schema({
     }
 });
 
+contextSchema.virtual('duration').get(function () {
+    if(!this.timeEnded)
+        return 0;
+    else
+        return this.timeEnded - this.timeStarted;
+});
+
+contextSchema.methods.getValue = function(key, cb) { // Returns value for the dotted notation key ("data.info.etc")
+    var parts = key.split('.');
+    var obj = this;
+    while(parts.length){
+        var part = parts.shift();
+        if(!obj[part])
+            return undefined;
+        obj = obj[part];
+    }
+    return obj;
+};
+
 module.exports = {
     contextSchema: contextSchema,
     ContextStatus: ContextStatus,

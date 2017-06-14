@@ -309,4 +309,57 @@ describe('/events', function(){
                 });
         });
     });
+
+    describe('POST /query', function(){
+        it('/query?query={type:"sum", key: "duration", query:{"data.someNumber": { "$gte": 5 }}} - responds with 200 OK and returns valid query id', function(done) {
+            var accessToken = jwt.sign({user: testUser}, config.jwtSecret);
+            var queryJson = JSON.stringify({type:"sum", key: "data.someNumber", query:{"data.someNumber": { "$gte": 5 }}});
+            request(app)
+                .post('/query')
+                .query({query: queryJson})
+                .set('Authorization', "Bearer " + accessToken)
+                .expect(200)
+                .end(function(err, res){
+                    if (err) return done(err);
+                    assert.equal(res.body.queryId, new Buffer(queryJson).toString('base64'), "query id is incorrect");
+                    done();
+                });
+        });
+    });
+
+    describe('GET /query/result', function(){
+        it('/query/result - query = {type:"sum", key: "duration", query:{"data.someNumber": { "$gte": 5 }}} - responds with 200 OK and returns valid sum of context durations', function(done) {
+            var accessToken = jwt.sign({user: testUser}, config.jwtSecret);
+            var queryJson = JSON.stringify({type:"sum", key: "data.someNumber", query:{"data.someNumber": { "$gte": 5 }}});
+            var queryId = new Buffer(queryJson).toString('base64');
+            request(app)
+                .get('/query/result')
+                .query({queryId: queryId})
+                .set('Authorization', "Bearer " + accessToken)
+                .expect(200)
+                .end(function(err, res){
+                    if (err) return done(err);
+                    assert.equal(res.body.sum, 35, "sum is invalid"); // 5 contexts, each 3 mins long
+                    done();
+                });
+        });
+    });
+
+    describe('GET /query/result', function(){
+        it('/query/result - query = {type:"avg", key: "duration", query:{"data.someNumber": { "$gte": 5 }}} - responds with 200 OK and returns valid sum of context durations', function(done) {
+            var accessToken = jwt.sign({user: testUser}, config.jwtSecret);
+            var queryJson = JSON.stringify({type:"avg", key: "data.someNumber", query:{"data.someNumber": { "$gte": 5 }}});
+            var queryId = new Buffer(queryJson).toString('base64');
+            request(app)
+                .get('/query/result')
+                .query({queryId: queryId})
+                .set('Authorization', "Bearer " + accessToken)
+                .expect(200)
+                .end(function(err, res){
+                    if (err) return done(err);
+                    assert.equal(res.body.avg, 7, "sum is invalid"); // 5 contexts, each 3 mins long = 3
+                    done();
+                });
+        });
+    });
 });

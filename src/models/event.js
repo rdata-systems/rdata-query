@@ -35,6 +35,25 @@ const eventSchema = new Schema({
     }
 });
 
+eventSchema.virtual('duration').get(function () {
+    if(!this.timeEnded)
+        return 0;
+    else
+        return this.timeEnded - this.timeStarted;
+});
+
+eventSchema.methods.getValue = function(key, cb) { // Returns value for the dotted notation key ("data.info.etc")
+    var parts = key.split('.');
+    var obj = this;
+    while(parts.length){
+        var part = parts.shift();
+        if(!obj[part])
+            return undefined;
+        obj = obj[part];
+    }
+    return obj;
+};
+
 module.exports = {
     eventSchema: eventSchema,
     createEventModel: function createEventModel(connection){
