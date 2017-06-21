@@ -5,11 +5,14 @@ const express = require('./services/express');
 const mongoose = require('./services/mongoose');
 
 module.exports = {
+    getExpress: function(routes){
+        return express(routes);
+    },
     getApi: function(connection, game){
         return api(connection, game)
     },
     getApp: function(connection, game){
-        return express([{path: '/api/v1', router: this.getApi(connection, game)}])
+        return this.getExpress([{path: '/api/v1', router: this.getApi(connection, game)}])
     },
     getServer: function(connection, game){
         return http.createServer(this.getApp(connection, game))
