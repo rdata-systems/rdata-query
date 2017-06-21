@@ -9,7 +9,7 @@ module.exports = {
         return api(connection, game)
     },
     getApp: function(connection, game){
-        return express('/api/v1', this.getApi(connection, game))
+        return express([{path: '/api/v1', router: this.getApi(connection, game)}])
     },
     getServer: function(connection, game){
         return http.createServer(this.getApp(connection, game))

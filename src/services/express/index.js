@@ -7,7 +7,7 @@ const cors = require('cors')
 const config = require('../../config');
 const errorHandlers = require('../../middlewares/error-handlers');
 
-module.exports = function app(path, router){
+module.exports = function app(){
 
     const app = express();
 
@@ -24,8 +24,19 @@ module.exports = function app(path, router){
     // morgan
     app.use(morgan('tiny'));
 
-    // routes
-    app.use(path, router);
+    // routes - taken from arguments
+
+    if(arguments.length > 0 && arguments[0]) {
+        if(arguments[0].constructor === Array) {
+            var routes = arguments[0];
+            for (var r in routes) {
+                app.use(routes[r].path, routes[r].router);
+            }
+        }
+        else if(typeof arguments[0] === 'object'){
+            app.use(arguments[0].path, arguments[0].router);
+        }
+    }
 
     // error handlers
     app.use(errorHandlers.clientErrorHandler);

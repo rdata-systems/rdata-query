@@ -29,7 +29,7 @@ var testUserNoRole = {
 var eventModels;
 
 beforeEach(function(done) {
-    app = express('/', routes(mongoose.connection, game));
+    app = express({path: '/', router: routes(mongoose.connection, game)});
     Event = eventModel.createEventModel(mongoose.connection);
 
     var fruits = ["apple", "banana", "pear", "peach", "grape", "orange", "pineapple"]; // I am hungry, ok?!

@@ -30,7 +30,7 @@ var testUserNoRole = {
 var contextModels;
 
 beforeEach(function(done) {
-    app = express('/', routes(mongoose.connection, game));
+    app = express({path: '/', router: routes(mongoose.connection, game)});
     Context = contextModel.createContextModel(mongoose.connection);
 
     var fruits = ["apple", "banana", "pear", "peach", "grape", "orange", "pineapple"]; // I am hungry, ok?!

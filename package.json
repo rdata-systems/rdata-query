@@ -1,6 +1,6 @@
 {
   "name": "rdata-query-server",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "RData Query Server",
   "readme": "readme.md",
   "main": "index.js",
