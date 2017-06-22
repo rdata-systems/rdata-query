@@ -44,7 +44,7 @@ const contextSchema = new Schema({
         type: Number
     },
     timeEnded: {
-        type: Date
+        type: Number
     },
     timeInterrupted: {
         type: Number
