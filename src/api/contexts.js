@@ -99,20 +99,27 @@ module.exports = function(connection, game) {
 
             // Calculates the sum of the given values
             if((query.type === 'sum' || query.type === 'avg') && !!query.key) {
-                var contexts;
                 Context.find(query.query).exec()
                     .then(function (ctxs) {
-                        contexts = filterUserContexts(ctxs, req.user);
+                        var contexts = filterUserContexts(ctxs, req.user);
                         var sum = contexts.reduce(function (sum, context) {
                             return sum + context.getValue(query.key);
                         }, 0);
 
-                        if(query.type === 'sum')
+                        if (query.type === 'sum')
                             res.json({sum: sum});
-                        else if(query.type === 'avg')
+                        else if (query.type === 'avg')
                             res.json({avg: sum / contexts.length});
                     })
                     .catch(next);
+            } else if(query.type === 'count') {
+                Context.find(query.query).exec()
+                    .then(function (ctxs) {
+                        var contexts = filterUserContexts(ctxs, req.user);
+                        res.json({count: contexts.length});
+                    })
+                    .catch(next);
+
             } else {
                 return next(new InvalidQueryError('Invalid query'));
             }

@@ -100,18 +100,24 @@ module.exports = function(connection, game) {
 
             // Calculates the sum of the given values
             if((query.type === 'sum' || query.type === 'avg') && !!query.key) {
-                var events;
                 Event.find(query.query).exec()
                     .then(function (evts) {
-                        events = filterUserEvents(evts, req.user);
+                        var events = filterUserEvents(evts, req.user);
                         var sum = events.reduce(function (sum, event) {
                             return sum + event.getValue(query.key);
                         }, 0);
 
-                        if(query.type === 'sum')
+                        if (query.type === 'sum')
                             res.json({sum: sum});
-                        else if(query.type === 'avg')
+                        else if (query.type === 'avg')
                             res.json({avg: sum / events.length});
+                    })
+                    .catch(next);
+            } else if(query.type === 'count') {
+                Event.find(query.query).exec()
+                    .then(function (evts) {
+                        var events = filterUserEvents(evts, req.user);
+                        res.json({count: events.length});
                     })
                     .catch(next);
             } else {

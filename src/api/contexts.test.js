@@ -368,4 +368,22 @@ describe('/contexts', function(){
                 });
         });
     });
+
+    describe('GET /query/result', function(){
+        it('/query/result - query = {type:"count", query:{"data.someNumber": { "$gte": 5 }}} - responds with 200 OK and returns valid count of contexts - 5', function(done) {
+            var accessToken = jwt.sign({user: testUser}, config.jwtSecret);
+            var queryJson = JSON.stringify({type:"count", query:{"data.someNumber": { "$gte": 5 }}});
+            var queryId = new Buffer(queryJson).toString('base64');
+            request(app)
+                .get('/query/result')
+                .query({queryId: queryId})
+                .set('Authorization', "Bearer " + accessToken)
+                .expect(200)
+                .end(function(err, res){
+                    if (err) return done(err);
+                    assert.equal(res.body.count, 5, "count is invalid"); // 5 contexts
+                    done();
+                });
+        });
+    });
 });
