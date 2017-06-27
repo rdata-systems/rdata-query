@@ -58,10 +58,14 @@ const contextSchema = new Schema({
 });
 
 contextSchema.virtual('duration').get(function () {
-    if(!this.timeEnded)
-        return 0;
+    if(this.timeEnded)
+        return this.timeEnded - this.timeStarted; // Context has ended - calculate correct duration
+
+    else if(this.timeInterrupted && (!this.timeRestored || this.timeRestored < this.timeInterrupted))
+        return this.timeInterrupted - this.timeStarted; // Context was interrupted and there is no restore time OR it was restored before it was interrupted again later - use interrupted time to calculate length
+
     else
-        return this.timeEnded - this.timeStarted;
+        return Date.now() - this.timeStarted; // Otherwise, assume context is active right now. This includes case when context was interrupted bug restored later
 });
 
 contextSchema.methods.getValue = function(key, cb) { // Returns value for the dotted notation key ("data.info.etc")
