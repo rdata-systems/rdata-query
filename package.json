@@ -1,6 +1,6 @@
 {
   "name": "rdata-query-server",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "RData Query Server",
   "readme": "readme.md",
   "main": "index.js",
@@ -19,19 +19,19 @@
   },
   "homepage": "https://github.com/rdata-systems/rdata-query-server#readme",
   "dependencies": {
-    "body-parser": "^1.17.1",
+    "body-parser": "^1.17.2",
     "compression": "^1.6.2",
     "cors": "^2.8.3",
-    "express": "^4.15.2",
-    "jsonwebtoken": "^7.3.0",
+    "express": "^4.15.3",
+    "jsonwebtoken": "^7.4.1",
     "merge": "^1.2.0",
-    "mongoose": "^4.9.4",
-    "morgan": "^1.8.1",
+    "mongoose": "^4.11.0",
+    "morgan": "^1.8.2",
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1"
   },
   "devDependencies": {
-    "mocha": "^3.2.0",
+    "mocha": "^3.4.2",
     "supertest": "^3.0.0"
   }
 }
