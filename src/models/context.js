@@ -58,14 +58,44 @@ const contextSchema = new Schema({
 });
 
 contextSchema.virtual('duration').get(function () {
-    if(this.timeEnded)
-        return this.timeEnded - this.timeStarted; // Context has ended - calculate correct duration
+    var endTime;
 
-    else if(this.timeInterrupted && (!this.timeRestored || this.timeRestored < this.timeInterrupted))
-        return this.timeInterrupted - this.timeStarted; // Context was interrupted and there is no restore time OR it was restored before it was interrupted again later - use interrupted time to calculate length
+    // 1. If context was never ended, interrupted, or restored, it's still going (normal state). Use current time.
+    if(!this.timeEnded && !this.timeInterrupted && !this.timeRestored)
+        endTime = Date.now();
+
+    // 2. If context was ended and it was never interrupted, context is properly ended.
+    else if(this.timeEnded && !this.timeInterrupted)
+        endTime = this.timeEnded;
+
+    // 3. If context was interrupted but never restored or ended, context is currently interrupted
+    else if(this.timeInterrupted && !this.timeEnded &&  !this.timeRestored)
+        endTime = this.timeInterrupted;
+
+    // 4. If context was interrupted but THEN restored after it and was never ended, context is still active
+    else if(this.timeInterrupted && !this.timeEnded && this.timeRestored && this.timeRestored > this.timeInterrupted)
+        endTime = Date.now();
+
+    // 5. If context was interrupted but then restored and then interrupted again, and was never restored after that, context is interrupted
+    else if(this.timeInterrupted && this.timeRestored && !this.timeEnded && this.timeRestored <= this.timeInterrupted)
+        endTime = this.timeInterrupted;
+
+    // 6. If context was interrupted and never restored but ended, it means context was probably ended by ending the root context. Context was ended while being in the interrupted state
+    else if(this.timeInterrupted && !this.timeRestored && this.timeEnded)
+        endTime = this.timeInterrupted;
+
+    // 7. If context was interrupted and restored and ended, but it was interrupted AGAIN after restoring, and then was ended, context was ended while being in the interrupted state
+    else if(this.timeInterrupted && this.timeRestored && this.timeEnded && this.timeRestored <= this.timeInterrupted)
+        endTime = this.timeInterrupted;
+
+    // 8. If context was interrupted and restored and ended, context was ended while being in the normal state
+    else if(this.timeInterrupted && this.timeRestored && this.timeEnded && this.timeRestored > this.timeInterrupted)
+        endTime = this.timeEnded;
 
     else
-        return Date.now() - this.timeStarted; // Otherwise, assume context is active right now. This includes case when context was interrupted bug restored later
+        endTime = Date.now();
+
+    return endTime - this.timeStarted;
 });
 
 contextSchema.methods.getValue = function(key, cb) { // Returns value for the dotted notation key ("data.info.etc")

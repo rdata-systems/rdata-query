@@ -52,7 +52,24 @@ describe('Context', function(){
             var restored = started + 2 * 60 * 1000; // in 2 minutes after start
             var interrupted = started + 3 * 60 * 1000; // in 3 min after start
             var context = new Context({name: "TestContext", timeStarted: started, timeInterrupted: interrupted, timeRestored: restored});
-            assert.equal(context.duration, interrupted - started, "context duration must be exactly " +  interrupted - started + " ms");
+            assert.equal(context.duration, interrupted - started, "context duration must be exactly " +  (interrupted - started) + " ms");
+        });
+
+        it('calculates correct duration of the context that was interrupted, and then ended without being restored', function() {
+            var started = Date.now();
+            var interrupted = started + 3 * 60 * 1000; // in 3 min after start
+            var ended = started + 5 * 60 * 1000; // in 5 min after start
+            var context = new Context({name: "TestContext", timeStarted: started, timeInterrupted: interrupted, timeEnded: ended });
+            assert.equal(context.duration, interrupted - started, "context duration must be exactly " +  (interrupted - started) + " ms");
+        });
+
+        it('calculates correct duration of the context that was interrupted, restored, then interrupted again and then ended', function() {
+            var started = Date.now();
+            var restored = started + 2 * 60 * 1000; // in 4 min after start
+            var interrupted = started + 3 * 60 * 1000; // in 3 min after start
+            var ended = started + 5 * 60 * 1000; // in 5 min after start
+            var context = new Context({name: "TestContext", timeStarted: started, timeRestored: restored, timeInterrupted: interrupted, timeEnded: ended });
+            assert.equal(context.duration, interrupted - started, "context duration must be exactly " +  (interrupted - started) + " ms");
         });
     });
 });
